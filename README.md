@@ -18,7 +18,7 @@ La interfaz C2E incorpora:
 - Iconos funcionales originales de Potree; botón de apertura del panel adaptado visualmente.
 - Idioma español inicial y traducciones complementarias de algunas etiquetas de la interfaz.
 - Carga de varias nubes mediante el parámetro de URL `clouds`.
-- Árbol de Escena para activar o desactivar la visualización de nubes.
+- Árbol de Escena para activar o desactivar la visualización de nubes, con casillas de alto contraste adaptadas a jsTree (verde C2E para el estado marcado).
 - Indicador en la esquina superior derecha que refleja las **nubes realmente visibles**, no únicamente las solicitadas por URL.
 - Herramientas nativas de Potree de medición, navegación, propiedades y recorte, sujetas a validación funcional específica.
 
@@ -121,16 +121,20 @@ El CSS utiliza, entre otros, los colores `#2f7d4f` (verde principal), `#256540` 
 
 ### Precaución técnica: checkboxes de Escena
 
-**Los checkboxes del árbol de Escena no deben tratarse como simples `input[type="checkbox"]`.** La distribución incluida de jsTree utiliza reglas `.jstree-checkbox`, `.jstree-checked` y `.jstree-undetermined`, con iconografía procedente de sprites (`32px.png` y, en el tema adaptable, `40px.png`). El contraste de los estados marcados sobre el panel claro es un asunto de accesibilidad **pendiente de mejora**.
+**Los checkboxes del árbol de Escena no deben tratarse como simples `input[type="checkbox"]`.** La distribución incluida de jsTree utiliza reglas `.jstree-checkbox`, `.jstree-checked` y `.jstree-undetermined`, con iconografía procedente de sprites (`32px.png` y, en el tema adaptable, `40px.png`). El contraste de los estados marcados sobre el panel claro **se ha mejorado y validado manualmente en la interfaz**.
 
-Para abordarlo, revisar conjuntamente:
+**Diagnóstico confirmado en Chrome:** el árbol real tiene ID `#jstree_scene`; cada casilla es un elemento `<i class="jstree-icon jstree-checkbox" role="presentation"></i>` dentro de un `<a class="jstree-anchor">`. Al marcar, jsTree añade `jstree-checked` al **ancla**, no a un `input` ni al elemento padre `<li>`. El tema original dibuja la casilla con `libs/jstree/themes/mixed/32px.png`.
 
-1. `libs/jstree/themes/mixed/style.css` (y su archivo minificado si se usa).
-2. `libs/jstree/jstree.js` y el DOM generado.
-3. `libs/potree/sidebar.html` y el código Potree que construye el árbol.
-4. `css/styles.css` y la cascada final en las herramientas de desarrollo del navegador.
+**Solución implementada:** el bloque final `CARBON2EARTH · CHECKBOXES JSTREE` de `css/styles.css` emplea selectores anclados a `#jstree_scene`, retira el sprite **solo de las casillas**, y dibuja sus estados mediante pseudoelementos CSS `::before` y `::after`:
 
-Verificar por separado **desmarcado, marcado, indeterminado y deshabilitado**, además de la operación de mostrar/ocultar nubes. No reemplazar sprites ni usar `appearance: none` a ciegas.
+- Desmarcada: fondo blanco y borde gris `#899b90`.
+- Marcada: verde C2E `#2f7d4f`, borde `#256540` y marca blanca.
+- Indeterminada: tratamiento visual propuesto con fondo verde pálido y trazo; **pendiente de una comprobación manual específica**.
+- Deshabilitada: opacidad reducida; **pendiente de una comprobación manual específica**.
+
+La prueba temporal en la consola de Chrome y la posterior prueba del CSS permanente confirmaron el contraste de estados marcado/desmarcado y la activación/desactivación de nubes, con el indicador dinámico sincronizado. No se modificaron `libs/jstree/*`, `libs/potree/*`, el DOM ni los controladores de visibilidad.
+
+**Criterio de mantenimiento:** no aplicar reglas genéricas para `input[type="checkbox"]` ni sustituir el sprite global de jsTree. Si se modifica esta mejora, comprobar en el DOM las clases y los estilos calculados; probar marcado, desmarcado, selección parcial y deshabilitado, además del comportamiento de las nubes. El selector `#scene_objects` por sí solo no resultó eficaz para esta personalización; el ID verificado es `#jstree_scene`.
 
 ### Particularidad de la barra lateral
 
@@ -146,6 +150,7 @@ En `libs/potree/sidebar.html`, `#show_bounding_box` controla las cajas delimitad
 - Activación/desactivación de nubes desde Escena.
 - Actualización del indicador al dejar visible una de tres nubes.
 - Integración de la interfaz visual C2E.
+- Mejora permanente del contraste de casillas jsTree (estados marcado y desmarcado) y conservación de la visibilidad funcional de las nubes; confirmada mediante capturas y pruebas locales en Chrome.
 
 **Pendiente de una batería formal de pruebas:** todas las herramientas de medición y recorte, exportaciones, rendimiento con grandes volúmenes, compatibilidad entre navegadores, responsive, manejo de errores de carga y accesibilidad completa.
 
@@ -161,13 +166,13 @@ En `libs/potree/sidebar.html`, `#show_bounding_box` controla las cajas delimitad
 ## 7. Hoja de ruta no implementada
 
 - **Contornos de pilotos:** visualizar las geometrías de las áreas piloto (por ejemplo, desde Shapefile) en un sistema de referencia coherente con las nubes; comprobar XY, Z y, si procede, ajuste al relieve. Existe `libs/shapefile/shapefile.js`, pero **no hay integración de límites implementada**.
-- **Accesibilidad del árbol:** mejorar el contraste de checkboxes jsTree tras análisis específico de su tema.
+- **Accesibilidad del árbol:** mejora de contraste de casillas jsTree **implementada y comprobada para marcado/desmarcado**. Pendiente de validar de forma específica los estados indeterminado/deshabilitado, la navegación con teclado y otros criterios de accesibilidad.
 - **Robustez:** validar parámetros de URL, informar de errores HTTP y evitar reajustes de cámara imprevistos.
 - **Integración FDM:** definir una interfaz desacoplada para abrir el visor desde el frontend principal de CARBON2EARTH, sin fusionar los repositorios.
 
 ## 8. Git, cambios y control de versiones
 
-El desarrollo local se mantuvo bajo `C:\xampp\htdocs\c2e` y se publicó como repositorio independiente. El primer commit de referencia fue `29b5bbb` (`Initial release: C2E Potree Viewer v1.0`).
+El desarrollo local se mantuvo bajo `C:\xampp\htdocs\c2e` y se publicó como repositorio independiente. El primer commit de referencia fue `29b5bbb` (`Initial release: C2E Potree Viewer v1.0`). La mejora posterior de contraste de jsTree reside exclusivamente en `css/styles.css`.
 
 Flujo sugerido para cualquier mejora:
 
