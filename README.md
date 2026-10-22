@@ -3,7 +3,7 @@
 Visor web independiente de nubes de puntos LiDAR para el proyecto **CARBON2EARTH (C2E)**, basado en **Potree** y personalizado visualmente para el entorno **Forest Digital Twin (FDM)**.
 
 **Repositorio:** https://github.com/ggvargasv-ing/C2E-Potree-Viewer  
-**Estado:** versión de referencia **v1.1**, cabeceras dinámicas y carga múltiple verificadas manualmente en XAMPP; no equivale a certificación de todas las herramientas.  
+**Estado:** versión de referencia **v1.1.1**, cabeceras dinámicas, carga múltiple y relleno progresivo de deslizadores verificados manualmente en XAMPP; no equivale a certificación de todas las herramientas.  
 **Repositorio relacionado, pero independiente:** https://github.com/ggvargasv-ing/C2E_FDM_Prototipo
 
 > **Principio de mantenimiento:** conservar el funcionamiento del visor estable; analizar el código real antes de modificar Potree, jsTree, sus estilos o sus eventos.
@@ -213,3 +213,7 @@ Antes de proponer cambios, reproducir el problema, identificar el archivo y el s
 Las cabeceras Apariencia, Herramientas, Escena y Filtros usan iconos SVG locales de [Tabler Icons](https://tabler.io/icons) (licencia MIT; conservar atribución y avisos de la biblioteca). El estilo está en el bloque final de `css/styles.css`; `js/c2e-ui.js` asigna la clase `c2e-section-open` y `aria-expanded` leyendo el `display` computado del panel hermano y observando sus cambios. El chevron cambia orientación y el texto/icono pasan a verde cuando la sección está abierta. `#menu_about` continúa oculto. **Validado en XAMPP:** cabeceras abiertas con texto e icono verdes, chevron hacia abajo, secciones cerradas neutras y sección «Acerca de» oculta. El arranque define los paneles cerrados antes de llamar a `c2eUpgradePotreeUI()`. La URL del script incluye `?v=c2e-headers-1-1` para evitar reutilizar una versión anterior en caché.
 
 **Control de caché (v1.1):** en `index.html`, `./js/c2e-ui.js?v=c2e-headers-1-1` diferencia la versión utilizada. Tras cambios de JS/CSS, actualizar el identificador de versión correspondiente para evitar contenido obsoleto en el navegador.
+
+### Deslizadores con relleno progresivo (v1.1.1)
+
+`js/c2e-ui.js` incorpora exclusivamente una mejora visual para los deslizadores jQuery UI del panel lateral: observa la posición horizontal del `.ui-slider-handle` y colorea de verde C2E (`#2f7d4f`) la porción recorrida de la barra, dejando el resto en gris (`#dce3dc`). Detecta los deslizadores disponibles y los añadidos dinámicamente; **no modifica los valores, rangos ni eventos de Potree**. `index.html` utiliza `c2e-ui.js?v=c2e-sliders-1-1-1` para evitar caché obsoleta. Efecto comprobado en Chrome/XAMPP tras recargar el visor; pendientes pruebas automatizadas y exhaustivas en otros navegadores.
