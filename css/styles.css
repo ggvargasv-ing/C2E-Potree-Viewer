@@ -798,3 +798,70 @@
 #potree_sidebar_container label:has(> #msaa) { display:none!important; }
 /* La iconografía de herramientas es la nativa de Potree. */
 
+/* ============================================================
+   CARBON2EARTH · CHECKBOXES JSTREE
+   Mejora de contraste visual del árbol Escena
+   ============================================================ */
+
+/* Casillas del árbol Escena */
+#jstree_scene .jstree-anchor > .jstree-checkbox {
+    background-image: none !important;
+    background-color: transparent !important;
+    position: relative !important;
+}
+
+/* Casilla desmarcada */
+#jstree_scene .jstree-anchor > .jstree-checkbox::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 14px;
+    height: 14px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1.5px solid #899b90;
+    border-radius: 3px;
+}
+
+/* Casilla marcada */
+#jstree_scene .jstree-anchor.jstree-checked > .jstree-checkbox::before {
+    background: #2f7d4f;
+    border-color: #256540;
+}
+
+/* Marca blanca */
+#jstree_scene .jstree-anchor.jstree-checked > .jstree-checkbox::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 7px;
+    width: 5px;
+    height: 8px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Estado de selección parcial */
+#jstree_scene .jstree-anchor > .jstree-checkbox.jstree-undetermined::before {
+    background: #e7f2ea;
+    border-color: #2f7d4f;
+}
+
+#jstree_scene .jstree-anchor > .jstree-checkbox.jstree-undetermined::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 11px;
+    width: 7px;
+    height: 3px;
+    background: #256540;
+    border: none;
+    transform: none;
+}
+
+/* Casillas deshabilitadas */
+#jstree_scene .jstree-checkbox-disabled {
+    opacity: 0.45;
+}
