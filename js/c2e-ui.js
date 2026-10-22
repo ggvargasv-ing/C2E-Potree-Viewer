@@ -9,6 +9,7 @@
     ['SPLAT QUALITY', 'Calidad de representación'],
     ['MEASUREMENT', 'Medición y análisis'],
     ['CLIPPING', 'Recorte espacial'],
+    ['Filters', 'Filtros'],
     ['SHOW/HIDE LABELS', 'Etiquetas de medición'],
     ['CLIP TASK', 'Operación de recorte'],
     ['CLIP METHOD', 'Método de recorte'],
@@ -93,7 +94,41 @@
     if (nameNode && nameNode.textContent !== display) nameNode.textContent = display;
     el.title = all.length ? `${visible.length} de ${all.length} nubes visibles` : 'Cargando nubes';
   }
+
+  // Estado real de las cabeceras: Potree cambia display del panel hermano,
+  // sin añadir clases activas ni aria-expanded a sus h3.
+  let headerObserver = null;
+  let headerClickBound = false;
+  function initSectionHeaders() {
+    const root = document.getElementById('potree_menu');
+    if (!root) return;
+    const ids = ['menu_appearance', 'menu_tools', 'menu_scene', 'menu_filters'];
+    const headings = ids.map(id => document.getElementById(id)).filter(Boolean);
+    const sync = () => headings.forEach(h => {
+      const panel = h.nextElementSibling;
+      if (!panel) return;
+      const open = window.getComputedStyle(panel).display !== 'none';
+      h.classList.toggle('c2e-section-open', open);
+      h.setAttribute('aria-expanded', String(open));
+    });
+    if (!headerObserver && typeof MutationObserver !== 'undefined') {
+      headerObserver = new MutationObserver(sync);
+      headings.forEach(h => {
+        if (h.nextElementSibling) headerObserver.observe(h.nextElementSibling, {
+          attributes: true, attributeFilter: ['style', 'class', 'hidden']
+        });
+      });
+    }
+    if (!headerClickBound) {
+      root.addEventListener('click', event => {
+        if (event.target.closest('h3')) window.requestAnimationFrame(sync);
+      });
+      headerClickBound = true;
+    }
+    sync();
+  }
   window.c2eUpgradePotreeUI = function () {
+    initSectionHeaders();
     update();
     const root=document.getElementById(sidebarId);
     if (root && !observer && typeof MutationObserver !== 'undefined') {
