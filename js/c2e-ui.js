@@ -127,7 +127,48 @@
     }
     sync();
   }
+
+  // Relleno progresivo visual de sliders jQuery UI; no altera valores ni eventos.
+  let sliderObserver = null;
+  const sliderObserved = new WeakSet();
+  function updateSliderFill(slider) {
+    const handle = slider.querySelector('.ui-slider-handle');
+    if (!handle) return;
+    const position = parseFloat(handle.style.left);
+    if (!Number.isFinite(position)) return;
+    const progress = Math.max(0, Math.min(100, position));
+    slider.style.setProperty('background',
+      `linear-gradient(to right, #2f7d4f 0%, #2f7d4f ${progress}%, #dce3dc ${progress}%, #dce3dc 100%)`,
+      'important');
+  }
+  function initSliderFills() {
+    const root = document.getElementById(sidebarId);
+    if (!root || sliderObserver) return;
+    sliderObserver = new MutationObserver(records => {
+      for (const record of records) {
+        if (record.type === 'attributes') {
+          const handle = record.target;
+          const slider = handle.closest('.ui-slider');
+          if (slider) updateSliderFill(slider);
+        } else if (record.addedNodes.length) {
+          discoverSliders();
+        }
+      }
+    });
+    function discoverSliders() {
+      root.querySelectorAll('.ui-slider').forEach(slider => {
+        const handle = slider.querySelector('.ui-slider-handle');
+        if (!handle || sliderObserved.has(handle)) return;
+        sliderObserved.add(handle);
+        sliderObserver.observe(handle, {attributes: true, attributeFilter: ['style']});
+        updateSliderFill(slider);
+      });
+    }
+    discoverSliders();
+    sliderObserver.observe(root, {subtree: true, childList: true});
+  }
   window.c2eUpgradePotreeUI = function () {
+    initSliderFills();
     initSectionHeaders();
     update();
     const root=document.getElementById(sidebarId);
