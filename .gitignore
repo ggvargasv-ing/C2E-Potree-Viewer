@@ -1,0 +1,21 @@
+﻿# Nubes de puntos LiDAR
+pointclouds/
+*.las
+*.laz
+
+# Rásteres y archivos geoespaciales pesados
+*.tif
+*.tiff
+*.gpkg
+
+# Archivos temporales
+*.zip
+*.bak
+*.tmp
+*.log
+Thumbs.db
+.DS_Store
+
+# Configuración privada
+.env
+.env.*

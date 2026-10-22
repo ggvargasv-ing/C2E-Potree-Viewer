@@ -1,0 +1,800 @@
+/* ===========================================================================
+   CARBON2EARTH | POTREE VIEWER
+   C2E ATELIER LIGHT  ·  v2.0  ·  2026-10
+
+   IMPORTANTE:
+   - No modificar el DOM, el canvas, los iconos ni los shaders de Potree.
+   - Tipografía: Inter si está instalada; Segoe UI Variable / Segoe UI como
+     alternativa sin necesidad de Google Fonts o descarga externa.
+   =========================================================================== */
+
+:root {
+  /* Identidad y superficies: tokens del mockup CARBON2EARTH */
+  --c2e-background:      #eef0ec;
+  --c2e-panel:           #ffffff;
+  --c2e-surface:         #f6f7f4;
+  --c2e-surface-hover:   #eef3ee;
+  --c2e-line:            #e2e5df;
+  --c2e-line-strong:     #cbd7ce;
+  --c2e-ink:             #17241f;
+  --c2e-muted:           #576b60;
+  --c2e-faint:           #7d8c82;
+  --c2e-brand:           #2f7d4f;
+  --c2e-brand-dark:      #256540;
+  --c2e-brand-soft:      #e7f2ea;
+  --c2e-brand-ring:      rgba(47,125,79,.20);
+
+  /* Referencias cromáticas del isologo (reservadas como acentos) */
+  --c2e-logo-green:      #66a548;
+  --c2e-logo-orange:     #e19800;
+  --c2e-logo-blue:       #6aa8ff;
+
+  --c2e-font: "Inter", "Segoe UI Variable", "Segoe UI", "Aptos", system-ui, sans-serif;
+  --c2e-radius: 8px;
+  --c2e-shadow-sm: 0 1px 2px rgba(23,36,31,.055);
+  --c2e-shadow-btn: 0 1px 2px rgba(23,36,31,.07), inset 0 1px 0 rgba(255,255,255,.95);
+
+  /* Variables heredadas de la hoja de estilos oficial de Potree.
+     Afectan a su GUI; no alteran material/colorización de puntos. */
+  --color-0:       #ffffff;
+  --color-1:       #cbd7ce;
+  --color-2:       #e8eee9;
+  --color-3:       #2f7d4f;
+  --color-4:       #256540;
+  --bg-color:      #ffffff;
+  --bg-color-2:    #f6f7f4;
+  --bg-light-color:#f6f7f4;
+  --bg-dark-color: #eef3ee;
+  --bg-hover-color:#e7f2ea;
+  --font-color:    #17241f;
+  --font-color-2:  #17241f;
+  --border-color:  #e2e5df;
+}
+
+/* 01 — Superficie y sistema tipográfico: EXCLUSIVAMENTE UI Potree */
+#potree_sidebar_container {
+  background: var(--c2e-panel) !important;
+  color: var(--c2e-ink) !important;
+  border-right: 1px solid var(--c2e-line) !important;
+  box-shadow: 3px 0 18px rgba(23,36,31,.09);
+  font-family: var(--c2e-font) !important;
+  font-size: 13px !important;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-color: #c6d0c7 #f6f7f4;
+  scrollbar-width: thin;
+}
+
+#sidebar_root,
+#sidebar_root .ui-widget,
+#potree_sidebar_container input,
+#potree_sidebar_container select,
+#potree_sidebar_container textarea,
+#potree_sidebar_container button,
+#potree_sidebar_container .ui-button {
+  font-family: var(--c2e-font) !important;
+}
+
+#sidebar_root {
+  color: var(--c2e-ink) !important;
+  font-size: 13px !important;
+  font-weight: 450;
+  line-height: 1.45;
+  letter-spacing: -.005em;
+}
+
+#potree_sidebar_container .potree_menu,
+#potree_sidebar_container #potree_menu,
+#potree_sidebar_container .accordion,
+#potree_sidebar_container .accordion-content,
+#potree_sidebar_container .ui-accordion-content {
+  color: var(--c2e-ink) !important;
+  background: var(--c2e-panel) !important;
+}
+
+#potree_sidebar_container #sidebar_header {
+  background: var(--c2e-panel);
+  border-bottom: 1px solid var(--c2e-line);
+}
+
+#potree_sidebar_container a { color: var(--c2e-brand-dark) !important; }
+#potree_sidebar_container a:hover { color: var(--c2e-brand) !important; }
+
+/* 02 — Secciones: cabeceras con jerarquía y textura sutil */
+#potree_sidebar_container .accordion > h3,
+#potree_sidebar_container #potree_menu > h3 {
+  margin: 7px 7px 0 !important;
+  padding: 9px 10px 9px 29px !important;
+  border: 1px solid var(--c2e-line) !important;
+  border-left: 3px solid #bccdc0 !important;
+  border-radius: 8px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f8f5 100%) !important;
+  color: var(--c2e-ink) !important;
+  font-size: 12.5px !important;
+  font-weight: 750 !important;
+  letter-spacing: .006em !important;
+  line-height: 1.35;
+  text-shadow: none !important;
+  box-shadow: var(--c2e-shadow-sm) !important;
+  filter: none !important;
+  transition: background-color .16s ease, border-color .16s ease;
+}
+
+#potree_sidebar_container .accordion > h3:hover {
+  background: var(--c2e-surface-hover) !important;
+  border-left-color: var(--c2e-brand) !important;
+}
+
+#potree_sidebar_container .accordion > h3.ui-state-active,
+#potree_sidebar_container .accordion > h3[aria-expanded="true"] {
+  background: linear-gradient(180deg, #f4faf5 0%, #e7f2ea 100%) !important;
+  color: var(--c2e-brand-dark) !important;
+  border-color: #cbded0 !important;
+  border-left-color: var(--c2e-brand) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+#potree_sidebar_container .accordion > h3 .ui-accordion-header-icon {
+  opacity: .72;
+}
+
+#potree_sidebar_container .accordion > h3 + div,
+#potree_sidebar_container .accordion-content {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 03 — Subtítulos y grupos de controles */
+#potree_sidebar_container .pv-menu-list {
+  margin-top: 10px;
+  margin-bottom: 13px;
+  color: var(--c2e-ink) !important;
+}
+
+#potree_sidebar_container .pv-menu-list > li {
+  line-height: 1.45;
+}
+
+#potree_sidebar_container .divider {
+  color: var(--c2e-muted) !important;
+  font-family: var(--c2e-font) !important;
+  font-size: 10.5px !important;
+  font-weight: 750 !important;
+  text-transform: uppercase;
+  letter-spacing: .07em !important;
+  margin: 9px 0 7px !important;
+  padding: 3px 5px !important;
+  text-shadow: none !important;
+}
+#potree_sidebar_container .divider > span::before,
+#potree_sidebar_container .divider > span::after {
+  background: var(--c2e-line-strong) !important;
+}
+
+#potree_sidebar_container .pv-select-label,
+#potree_sidebar_container label {
+  color: var(--c2e-ink);
+  font-weight: 500;
+}
+
+#potree_sidebar_container .propertypanel_content .heading {
+  color: var(--c2e-brand-dark);
+  font-weight: 750;
+}
+
+/* 04 — Botones de jQuery UI: aspecto nativo, pero pulido.
+   NO aplicar padding o dimensiones forzadas a iconos de medición. */
+#potree_sidebar_container .ui-button,
+#potree_sidebar_container .ui-state-default.ui-button,
+.ui-dialog .ui-button {
+  border: 1px solid var(--c2e-line-strong) !important;
+  border-radius: 7px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f3ef 100%) !important;
+  color: var(--c2e-ink) !important;
+  box-shadow: var(--c2e-shadow-btn) !important;
+  text-shadow: none !important;
+  font-weight: 600 !important;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+#potree_sidebar_container .ui-button:hover,
+#potree_sidebar_container .ui-button.ui-state-hover,
+.ui-dialog .ui-button:hover {
+  border-color: #a5beab !important;
+  background: linear-gradient(180deg, #ffffff 0%, #e9f2eb 100%) !important;
+  color: var(--c2e-brand-dark) !important;
+  box-shadow: 0 1px 4px rgba(47,125,79,.12) !important;
+}
+
+#potree_sidebar_container .ui-button.ui-state-active,
+#potree_sidebar_container .ui-button[aria-pressed="true"],
+#potree_sidebar_container .ui-checkboxradio-label.ui-state-active,
+#potree_sidebar_container .ui-button:active,
+.ui-dialog .ui-button.ui-state-active {
+  border-color: var(--c2e-brand-dark) !important;
+  background: linear-gradient(180deg, #368d59 0%, #2f7d4f 100%) !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.14), 0 1px 2px rgba(23,36,31,.10) !important;
+}
+
+#potree_sidebar_container .ui-button.ui-state-active .ui-button-text,
+#potree_sidebar_container .ui-button.ui-state-active .ui-button-icon,
+#potree_sidebar_container .ui-button[aria-pressed="true"] .ui-button-text {
+  color: #ffffff !important;
+}
+
+#potree_sidebar_container .ui-button.ui-state-disabled,
+#potree_sidebar_container .ui-button:disabled,
+.ui-dialog .ui-button:disabled {
+  border-color: var(--c2e-line) !important;
+  background: var(--c2e-surface) !important;
+  color: var(--c2e-faint) !important;
+  box-shadow: none !important;
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+/* 05 — Herramientas gráficas nativas: respetar SVG/PNG originales.
+   El hover se limita a un halo, no a recolorear sus iconos. */
+#potree_sidebar_container .button-icon {
+  cursor: pointer;
+  transition: filter .15s ease, opacity .15s ease;
+}
+#potree_sidebar_container .button-icon:hover {
+  filter: drop-shadow(0 1px 2px rgba(47,125,79,.22));
+}
+
+/* 06 — Sliders y controles de apariencia */
+#potree_sidebar_container .ui-slider,
+#potree_sidebar_container .pv-menu-list .ui-slider,
+#potree_sidebar_container .panel-body > li > .ui-slider,
+#potree_sidebar_container .panel-body > div > li > .ui-slider {
+  height: 7px;
+  border: 1px solid #dce3dc !important;
+  border-radius: 999px !important;
+  background: #e5eae5 !important;
+  box-shadow: inset 0 1px 1px rgba(23,36,31,.06);
+}
+#potree_sidebar_container .ui-slider .ui-slider-range {
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #aad0b3 !important;
+}
+#potree_sidebar_container .ui-slider .ui-slider-handle {
+  width: 16px;
+  height: 16px;
+  margin-top: -1px;
+  border: 2px solid var(--c2e-brand) !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(23,36,31,.20) !important;
+  cursor: grab;
+}
+#potree_sidebar_container .ui-slider .ui-slider-handle:active { cursor: grabbing; }
+#potree_sidebar_container .ui-slider .ui-slider-handle:hover {
+  box-shadow: 0 0 0 4px var(--c2e-brand-ring), 0 1px 4px rgba(23,36,31,.14) !important;
+}
+
+#potree_sidebar_container input[type="checkbox"],
+#potree_sidebar_container input[type="radio"] {
+  accent-color: var(--c2e-brand);
+}
+
+#potree_sidebar_container input[type="text"],
+#potree_sidebar_container input[type="number"],
+#potree_sidebar_container input[type="search"],
+#potree_sidebar_container select,
+#potree_sidebar_container textarea,
+.ui-dialog input[type="text"],
+.ui-dialog input[type="number"],
+.ui-dialog select {
+  min-height: 27px;
+  border: 1px solid var(--c2e-line-strong) !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: var(--c2e-ink) !important;
+  font-family: var(--c2e-font) !important;
+  font-size: 12px;
+  padding: 3px 7px;
+  outline-color: var(--c2e-brand);
+}
+
+#potree_sidebar_container input::placeholder,
+#potree_sidebar_container textarea::placeholder {
+  color: var(--c2e-faint);
+}
+
+/* 07 — Jerarquía del árbol de escenas */
+#potree_sidebar_container .jstree-anchor {
+  color: var(--c2e-ink) !important;
+  border-radius: 5px !important;
+  font-size: 12px;
+}
+#potree_sidebar_container .jstree-default .jstree-hovered {
+  background: var(--c2e-surface-hover) !important;
+  color: var(--c2e-ink) !important;
+  box-shadow: none !important;
+}
+#potree_sidebar_container .jstree-default .jstree-clicked {
+  background: var(--c2e-brand-soft) !important;
+  color: var(--c2e-brand-dark) !important;
+  box-shadow: inset 3px 0 0 var(--c2e-brand) !important;
+}
+
+/* 08 — Menús flotantes y cuadros de diálogo */
+.ui-menu,
+.ui-selectmenu-menu .ui-menu {
+  background: #ffffff !important;
+  color: var(--c2e-ink) !important;
+  border: 1px solid var(--c2e-line-strong) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 22px rgba(23,36,31,.12) !important;
+}
+.ui-menu-item-wrapper {
+  color: var(--c2e-ink) !important;
+  border: 0 !important;
+  border-radius: 5px !important;
+  background: transparent !important;
+  font-family: var(--c2e-font) !important;
+}
+.ui-menu-item-wrapper.ui-state-active,
+.ui-menu-item-wrapper.ui-state-focus {
+  color: var(--c2e-brand-dark) !important;
+  border: 0 !important;
+  background: var(--c2e-brand-soft) !important;
+}
+
+.ui-dialog {
+  color: var(--c2e-ink) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--c2e-line-strong) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 14px 34px rgba(23,36,31,.20) !important;
+  font-family: var(--c2e-font) !important;
+}
+.ui-dialog .ui-dialog-titlebar {
+  color: var(--c2e-ink) !important;
+  background: var(--c2e-surface) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--c2e-line) !important;
+}
+.ui-dialog .ui-dialog-content,
+.ui-dialog .ui-dialog-buttonpane {
+  color: var(--c2e-ink) !important;
+  background: #ffffff !important;
+  border-color: var(--c2e-line) !important;
+}
+
+.ui-tooltip {
+  color: #ffffff !important;
+  background: #243a2f !important;
+  border: 1px solid #243a2f !important;
+  border-radius: 6px !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,.18) !important;
+  font-family: var(--c2e-font) !important;
+  font-size: 11px;
+}
+
+/* 09 — Perfil, propiedades y tablas de medición (sin cambiar su lógica) */
+#profile_window { background: var(--c2e-panel) !important; color: var(--c2e-ink) !important; }
+#profile_titlebar {
+  background: var(--c2e-surface) !important;
+  color: var(--c2e-ink) !important;
+  text-shadow: none !important;
+  font-family: var(--c2e-font) !important;
+}
+#potree_sidebar_container .label-transform {
+  color: var(--c2e-ink);
+  border: 1px solid var(--c2e-line-strong);
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+  background: #ffffff;
+}
+#potree_sidebar_container fieldset { border-color: var(--c2e-line) !important; }
+#potree_sidebar_container .measurement_value_table,
+#potree_sidebar_container .coordinates_table_container {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 10 — Barra de desplazamiento discreta */
+#potree_sidebar_container::-webkit-scrollbar,
+#potree_sidebar_container ::-webkit-scrollbar { width: 7px; height: 7px; }
+#potree_sidebar_container::-webkit-scrollbar-track,
+#potree_sidebar_container ::-webkit-scrollbar-track { background: var(--c2e-surface); }
+#potree_sidebar_container::-webkit-scrollbar-thumb,
+#potree_sidebar_container ::-webkit-scrollbar-thumb {
+  background: #c8d3c9;
+  border-radius: 9px;
+}
+#potree_sidebar_container::-webkit-scrollbar-thumb:hover,
+#potree_sidebar_container ::-webkit-scrollbar-thumb:hover { background: #a7bdaa; }
+
+/* 11 — Accesibilidad: foco visible para teclado */
+#potree_sidebar_container :is(a,button,input,select,textarea,.ui-button,.jstree-anchor):focus-visible,
+.ui-dialog .ui-button:focus-visible {
+  outline: 2px solid var(--c2e-brand) !important;
+  outline-offset: 2px !important;
+}
+
+/* 12 — Preservar la decisión del proyecto de ocultar la sección Acerca de */
+#menu_about { display: none; }
+
+/* Importante: intentionally NO styles for #potree_render_area, canvas, .annotation,
+   .potree_menu_toggle, img, SVG icons, splat rendering, LAS RGB/NIR ramps, etc. */
+
+
+/* ===========================================================================
+   C2E ATELIER LIGHT — refinamiento editorial / executive demo (v2.0)
+   Sobrescrituras locales sobre la skin validada v1. No afecta a WebGL.
+   =========================================================================== */
+
+:root {
+  --c2e-font: "Segoe UI Variable", "Inter", "Aptos", "Segoe UI", system-ui, sans-serif;
+  --c2e-ink: #17241f;
+  --c2e-border-hi: #d7e0d8;
+  --c2e-brand-deep: #235d3b;
+  --c2e-elevation: 0 1px 2px rgba(23,36,31,.045), 0 6px 22px rgba(23,36,31,.045);
+}
+
+/* Panel de trabajo: sensación de superficie limpia y bien construida */
+#potree_sidebar_container {
+  background: #fff !important;
+  border-right: 1px solid #d6dfd7 !important;
+  box-shadow: 4px 0 24px rgba(16,36,26,.095);
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+  font-feature-settings: "tnum" 1;
+}
+#sidebar_root { font-size: 12.5px !important; letter-spacing: 0; }
+#potree_sidebar_container .potree_menu,
+#potree_sidebar_container #potree_menu { background: #fff !important; }
+
+/* Cabeceras sin aspecto de botón elevado: estética más arquitectónica */
+#potree_sidebar_container .accordion > h3,
+#potree_sidebar_container #potree_menu > h3 {
+  margin: 10px 9px 3px !important;
+  padding: 10px 11px 10px 30px !important;
+  border: 1px solid #dce5dd !important;
+  border-left: 3px solid #a9c7af !important;
+  border-radius: 9px !important;
+  background: #f7f9f6 !important;
+  color: #20382b !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: .015em !important;
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+#potree_sidebar_container .accordion > h3:hover,
+#potree_sidebar_container #potree_menu > h3:hover {
+  background: #f0f6f0 !important;
+  border-left-color: #2f7d4f !important;
+}
+#potree_sidebar_container .accordion > h3.ui-state-active,
+#potree_sidebar_container .accordion > h3[aria-expanded="true"],
+#potree_sidebar_container #potree_menu > h3.ui-state-active {
+  background: #eaf4ec !important;
+  border-color: #d4e6d8 !important;
+  border-left-color: #2f7d4f !important;
+  color: #235d3b !important;
+  box-shadow: 0 1px 0 rgba(23,36,31,.025) !important;
+}
+
+/* Etiquetas de secciones: estructura limpia, sin serif decorativa */
+#potree_sidebar_container .divider,
+#potree_sidebar_container .divider > span {
+  font-family: var(--c2e-font) !important;
+  color: #64776a !important;
+  text-transform: uppercase !important;
+  letter-spacing: .09em !important;
+  font-size: 9.5px !important;
+  font-weight: 750 !important;
+}
+#potree_sidebar_container .pv-menu-list { margin-top: 8px; margin-bottom: 14px; }
+#potree_sidebar_container .pv-menu-list > li { padding-top: 2px; padding-bottom: 2px; }
+
+/* Botones: más definidos, menos degradado, lectura nítida */
+#potree_sidebar_container .ui-button,
+#potree_sidebar_container .ui-state-default.ui-button,
+.ui-dialog .ui-button {
+  background: #f9faf8 !important;
+  border: 1px solid #d6dfd7 !important;
+  border-radius: 7px !important;
+  color: #24372d !important;
+  box-shadow: 0 1px 2px rgba(23,36,31,.06) !important;
+  font-weight: 650 !important;
+  letter-spacing: -.005em;
+}
+#potree_sidebar_container .ui-button:hover,
+#potree_sidebar_container .ui-button.ui-state-hover,
+.ui-dialog .ui-button:hover {
+  background: #edf5ef !important;
+  border-color: #a7c8af !important;
+  color: #235d3b !important;
+  box-shadow: 0 1px 3px rgba(47,125,79,.10) !important;
+}
+#potree_sidebar_container .ui-button.ui-state-active,
+#potree_sidebar_container .ui-button[aria-pressed="true"],
+#potree_sidebar_container .ui-checkboxradio-label.ui-state-active,
+#potree_sidebar_container .ui-button:active,
+.ui-dialog .ui-button.ui-state-active {
+  background: #2f7d4f !important;
+  border-color: #256540 !important;
+  color: #fff !important;
+  box-shadow: 0 1px 3px rgba(35,93,59,.20) !important;
+}
+#potree_sidebar_container .ui-button.ui-state-disabled,
+#potree_sidebar_container .ui-button:disabled,
+.ui-dialog .ui-button:disabled {
+  background: #f5f7f4 !important;
+  color: #7d8c82 !important;
+  border-color: #e2e5df !important;
+  box-shadow: none !important;
+}
+
+/* Grupos de botones del visor, más cohesionados pero sin alterar el layout */
+#potree_sidebar_container .ui-buttonset .ui-button,
+#potree_sidebar_container .ui-controlgroup .ui-button { box-shadow: none !important; }
+#potree_sidebar_container .ui-buttonset .ui-button.ui-state-active,
+#potree_sidebar_container .ui-controlgroup .ui-button.ui-state-active {
+  box-shadow: 0 1px 3px rgba(35,93,59,.16) !important;
+}
+
+/* Controles de precisión: legibilidad de valores y feedback sobrio */
+#potree_sidebar_container input[type="text"],
+#potree_sidebar_container input[type="number"],
+#potree_sidebar_container input[type="search"],
+#potree_sidebar_container select,
+#potree_sidebar_container textarea {
+  border-color: #d6dfd7 !important;
+  border-radius: 7px !important;
+  background: #fcfdfb !important;
+  font-size: 12px !important;
+}
+#potree_sidebar_container input[type="text"]:focus,
+#potree_sidebar_container input[type="number"]:focus,
+#potree_sidebar_container select:focus,
+#potree_sidebar_container textarea:focus {
+  border-color: #76ac85 !important;
+  box-shadow: 0 0 0 3px rgba(47,125,79,.10) !important;
+}
+#potree_sidebar_container .ui-slider {
+  height: 6px;
+  background: #e6ebe5 !important;
+  border-color: #e2e8e1 !important;
+  box-shadow: inset 0 1px 2px rgba(23,36,31,.045);
+}
+#potree_sidebar_container .ui-slider .ui-slider-handle {
+  background: #fff !important;
+  border: 2px solid #2f7d4f !important;
+  box-shadow: 0 1px 4px rgba(23,36,31,.18) !important;
+}
+
+/* jsTree: selección suave no confunde capas con botones primarios */
+#potree_sidebar_container .jstree-anchor { border-radius: 6px !important; }
+#potree_sidebar_container .jstree-default .jstree-hovered {
+  background: #f1f6f1 !important;
+}
+#potree_sidebar_container .jstree-default .jstree-clicked {
+  background: #e7f2ea !important;
+  color: #235d3b !important;
+  box-shadow: inset 2px 0 #2f7d4f !important;
+}
+
+/* Pequeños detalles que completan el tratamiento visual */
+#potree_sidebar_container .label-transform {
+  background: #f9fbf8;
+  border-color: #d7e0d8;
+}
+#potree_sidebar_container .button-icon:hover {
+  filter: drop-shadow(0 2px 2px rgba(35,93,59,.22));
+}
+#potree_sidebar_container ::selection { background: #d8ecdd; color: #173f28; }
+@media (prefers-reduced-motion: reduce) {
+  #potree_sidebar_container .ui-button,
+  #potree_sidebar_container .accordion > h3,
+  #potree_sidebar_container .button-icon { transition: none !important; }
+}
+
+
+/* ==============================================================
+   C2E ATELIER — REFINAMIENTO DE CABECERAS / TONAL SOFT
+   Prioridad sobre las reglas originales, sin acento lateral.
+   ============================================================== */
+#potree_sidebar_container .accordion > h3,
+#potree_sidebar_container #potree_menu > h3 {
+  border: 1px solid #dce5dd !important;
+  border-left: 1px solid #dce5dd !important;
+  border-radius: 8px !important;
+  background: #f2f5f1 !important;
+  color: #17241f !important;
+  font-weight: 700 !important;
+  letter-spacing: .008em !important;
+  box-shadow: none !important;
+  /* Se preserva el padding izquierdo que aloja el icono de acordeón. */
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+#potree_sidebar_container .accordion > h3:hover,
+#potree_sidebar_container #potree_menu > h3:hover {
+  background: #e9f0e9 !important;
+  border-color: #cbd9cd !important;
+  border-left-color: #cbd9cd !important;
+  color: #17241f !important;
+}
+#potree_sidebar_container .accordion > h3.ui-state-active,
+#potree_sidebar_container .accordion > h3[aria-expanded="true"],
+#potree_sidebar_container #potree_menu > h3.ui-state-active {
+  background: #eaf3ec !important;
+  border-color: #cbded0 !important;
+  border-left-color: #cbded0 !important;
+  color: #256540 !important;
+  box-shadow: none !important;
+}
+#potree_sidebar_container .accordion > h3:focus-visible,
+#potree_sidebar_container #potree_menu > h3:focus-visible {
+  outline: 2px solid #2f7d4f !important;
+  outline-offset: 2px;
+}
+
+
+/* ======================================================================
+   C2E ATELIER | REFINAMIENTO INTEGRAL v3.0
+   Prioridad final: cabeceras tipográficas, divisores y botón flotante.
+   No se modifica el WebGL ni los iconos funcionales de medición.
+   ====================================================================== */
+
+:root {
+  --c2e-heading-bg: #f1f4f0;
+  --c2e-heading-hover: #e9f0e9;
+  --c2e-heading-line: #dae3db;
+  --c2e-heading-ink: #21352a;
+}
+
+/* Cabeceras: más altura, apariencia de sección y no de campo/input. */
+#potree_sidebar_container .accordion > h3,
+#potree_sidebar_container #potree_menu > h3 {
+  position: relative;
+  margin: 13px 10px 5px !important;
+  padding: 12px 34px 12px 16px !important;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  background: var(--c2e-heading-bg) !important;
+  border: 1px solid var(--c2e-heading-line) !important;
+  border-left: 1px solid var(--c2e-heading-line) !important;
+  border-radius: 10px !important;
+  color: var(--c2e-heading-ink) !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+  letter-spacing: -.015em !important;
+  line-height: 1.35 !important;
+  text-transform: none !important;
+  box-shadow: 0 1px 2px rgba(20,45,31,.035) !important;
+}
+#potree_sidebar_container .accordion > h3:hover,
+#potree_sidebar_container #potree_menu > h3:hover {
+  background: var(--c2e-heading-hover) !important;
+  border-color: #d2dfd4 !important;
+  color: var(--c2e-heading-ink) !important;
+}
+#potree_sidebar_container .accordion > h3.ui-state-active,
+#potree_sidebar_container .accordion > h3[aria-expanded="true"],
+#potree_sidebar_container #potree_menu > h3.ui-state-active {
+  background: #edf3ee !important;
+  border-color: #d7e3d9 !important;
+  border-left-color: #d7e3d9 !important;
+  color: #203c2a !important;
+  box-shadow: 0 1px 2px rgba(20,45,31,.045) !important;
+}
+/* Indicador de expansión: recolocar el icono nativo sin alterar su evento. */
+#potree_sidebar_container .accordion > h3 .ui-accordion-header-icon,
+#potree_sidebar_container #potree_menu > h3 .ui-accordion-header-icon {
+  position: absolute !important;
+  left: auto !important;
+  right: 12px !important;
+  top: 50% !important;
+  margin-top: -8px !important;
+  opacity: .7;
+  filter: grayscale(1);
+}
+#potree_sidebar_container .accordion > h3:hover .ui-accordion-header-icon,
+#potree_sidebar_container .accordion > h3.ui-state-active .ui-accordion-header-icon {
+  opacity: 1;
+}
+
+/* Subtítulos de grupos (leyendas de fieldset y separadores): legibles. */
+#potree_sidebar_container fieldset legend,
+#potree_sidebar_container .divider,
+#potree_sidebar_container .divider > span {
+  font-family: var(--c2e-font) !important;
+  font-size: 10.5px !important;
+  font-weight: 650 !important;
+  letter-spacing: .045em !important;
+  line-height: 1.5 !important;
+  color: #526d5b !important;
+  text-transform: uppercase !important;
+}
+#potree_sidebar_container fieldset {
+  border-color: #dfe6df !important;
+}
+#potree_sidebar_container fieldset legend { padding: 0 8px !important; }
+#potree_sidebar_container .divider { margin-top: 13px; margin-bottom: 10px; }
+
+/* Legibilidad de propiedades sin inflar los widgets jQuery UI. */
+#potree_sidebar_container .pv-menu-list,
+#potree_sidebar_container .accordion-content {
+  line-height: 1.5;
+}
+#potree_sidebar_container label,
+#potree_sidebar_container .property {
+  letter-spacing: 0;
+}
+
+/* Toggle flotante: fondo blanco y iconografía oscura.
+   Los selectores cubren las variantes frecuentes de Potree, cuya marca
+   puede ser img, div o elemento creado por JS. */
+#potree_render_area #potree_menu_toggle,
+#potree_render_area .potree_menu_toggle,
+#potree_render_area #menu_toggle,
+#potree_render_area .menu_toggle,
+#potree_menu_toggle,
+.potree_menu_toggle {
+  background-color: #ffffff !important;
+  color: #24372d !important;
+  border: 1px solid #d7e1d8 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 12px rgba(11,28,18,.14), 0 1px 2px rgba(11,28,18,.06) !important;
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease !important;
+}
+#potree_render_area #potree_menu_toggle:hover,
+#potree_render_area .potree_menu_toggle:hover,
+#potree_render_area #menu_toggle:hover,
+#potree_render_area .menu_toggle:hover,
+#potree_menu_toggle:hover,
+.potree_menu_toggle:hover {
+  background-color: #e7f2ea !important;
+  border-color: #a6c5ae !important;
+  box-shadow: 0 4px 15px rgba(11,28,18,.18) !important;
+}
+/* NOTA: si el icono es una imagen con fondo negro integrado, hará falta
+   sustituir ese recurso o añadir una clase al elemento; CSS no puede
+   separar el fondo y las líneas dentro de un bitmap opaco. */
+
+@media (prefers-reduced-motion: reduce) {
+  #potree_menu_toggle, .potree_menu_toggle { transition: none !important; }
+}
+
+/* CARBON2EARTH — A+B: complemento no destructivo.
+   Se carga DESPUÉS de css/styles.css. Nunca altera canvas ni herramientas 3D. */
+:root{--c2e-polish-ink:#17241f;--c2e-polish-green:#2f7d4f;--c2e-polish-soft:#f2f5f1;--c2e-polish-line:#dce5dd}
+#potree_sidebar_container{font-family:"Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif!important;border-right:1px solid var(--c2e-polish-line)!important}
+#potree_sidebar_container .accordion>h3{font-size:12.5px!important;font-weight:700!important;letter-spacing:0!important;line-height:1.35!important;padding-top:12px!important;padding-bottom:12px!important;background:#f2f5f1!important;border-color:#dce5dd!important;color:#203c2a!important;box-shadow:none!important}
+#potree_sidebar_container .accordion>h3:hover{background:#eaf0e9!important}
+#potree_sidebar_container .accordion>h3:focus-visible,#potree_sidebar_container .ui-button:focus-visible,#potree_sidebar_container input:focus-visible{outline:2px solid var(--c2e-polish-green)!important;outline-offset:2px}
+#potree_sidebar_container .divider,#potree_sidebar_container fieldset legend{font-family:"Segoe UI Variable Text","Segoe UI",Inter,sans-serif!important;font-size:10.5px!important;font-weight:650!important;letter-spacing:.015em!important;color:#526b5b!important}
+#potree_sidebar_container input,#potree_sidebar_container label,#potree_sidebar_container select{font-family:inherit!important}
+#potree_sidebar_container .ui-button{white-space:normal!important;line-height:1.3!important}
+/* No establecer dimensiones ni comportamiento de botones/iconos/sliders de Potree. */
+/* Identificación sin interacciones para no interceptar ratón ni orbit/pan. */
+#c2e-cloud-badge{position:absolute;top:15px;right:18px;z-index:20;max-width:min(390px,calc(100% - 90px));box-sizing:border-box;pointer-events:none;background:rgba(250,252,249,.95);border:1px solid rgba(208,224,211,.92);border-radius:10px;box-shadow:0 5px 20px rgba(9,29,19,.14);padding:9px 12px;color:var(--c2e-polish-ink);font:600 12px/1.4 "Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif;backdrop-filter:blur(6px)}
+#c2e-cloud-badge .c2e-badge-kicker{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:750;letter-spacing:.045em;text-transform:uppercase;color:#547060;margin-bottom:2px}
+#c2e-cloud-badge .c2e-badge-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#2f7d4f}
+#c2e-cloud-badge .c2e-badge-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#17241f}
+@media(max-width:650px){#c2e-cloud-badge{right:10px;top:12px;padding:7px 9px;font-size:11px;max-width:calc(100% - 75px)}}
+@media(prefers-reduced-motion:reduce){#potree_sidebar_container *{scroll-behavior:auto!important}}
+
+
+/* ================================================================
+   C2E - acabado final integrado
+   ================================================================ */
+#potree_sidebar_container #menu_about,
+#potree_sidebar_container #menu_about + div { display:none!important; }
+/* Potree sidebar.html: #show_bounding_box es la casilla de cajas
+   funcional; #msaa es otra opción que comparte etiqueta errónea. */
+#potree_sidebar_container li:has(> label > #msaa) { display:none!important; }
+/* Selector alternativo para variantes DOM del sidebar. */
+#potree_sidebar_container label:has(> #msaa) { display:none!important; }
+/* La iconografía de herramientas es la nativa de Potree. */
+
