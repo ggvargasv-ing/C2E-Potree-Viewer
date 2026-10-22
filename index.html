@@ -31,7 +31,7 @@
 	<script src="./libs/potree/potree.js"></script>
 	<script src="./libs/plasio/js/laslaz.js"></script>
 	<script src="js/get.js"></script>
-	<script src="./js/c2e-ui.js?v=c2e-release"></script>
+	<script src="./js/c2e-ui.js?v=c2e-headers-1-1"></script>
 
 	<div class="potree_container" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px; ">
 		<div id="potree_render_area" style="background-image: url('../build/potree/resources/images/background.jpg');"></div>
@@ -48,14 +48,16 @@
 		viewer.useHQ = true;
 		viewer.loadGUI(() => {
 			viewer.setLanguage('es');
-			window.c2eUpgradePotreeUI();
-			$("#menu_appearance").next().show();
-			$("#menu_tools").next().show();
-			$("#menu_clipping").next().show();
-			// Show scene
-			$("#menu_scene").next().show();
-			// Hide header languages
+			// Configuración inicial de las secciones
+			$("#menu_appearance").next().hide();
+			$("#menu_tools").next().hide();
+			$("#menu_clipping").next().hide();
+			$("#menu_scene").next().hide();
+			$("#menu_filters").next().hide();
+			// Ocultar cabecera de idiomas
 			$("#sidebar_header").empty();
+			// Sincronizar la UI después de establecer el estado inicial
+			window.c2eUpgradePotreeUI();
 			viewer.toggleSidebar();
 		});
 		function loadPointCloud(name) {

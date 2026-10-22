@@ -865,3 +865,104 @@
 #jstree_scene .jstree-checkbox-disabled {
     opacity: 0.45;
 }
+
+/* =============================================================
+   C2E · Cabeceras de secciones del visor — Tabler Icons
+   La clase c2e-section-open se sincroniza desde js/c2e-ui.js.
+   ============================================================= */
+#potree_sidebar_container #potree_menu > h3:not(#menu_about) {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 10px 40px 10px 46px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #dce5dd !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  color: #24352b !important;
+  font-size: 13.5px !important;
+  font-weight: 650 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.25 !important;
+  cursor: pointer !important;
+  transition: background-color .18s ease, color .18s ease !important;
+}
+#potree_sidebar_container #potree_menu > h3:not(#menu_about):hover {
+  background: #f5f8f6 !important;
+}
+/* :not(#menu_about) iguala la especificidad de la regla general */
+#potree_sidebar_container #potree_menu > h3.c2e-section-open:not(#menu_about) {
+  background: #edf5ef !important;
+  color: #2f7d4f !important;
+  border-left: 3px solid #2f7d4f !important;
+  padding-left: 43px !important;
+}
+#potree_sidebar_container #potree_menu > h3:not(#menu_about)::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 16px !important;
+  height: 16px !important;
+  background-color: #64766a !important;
+  -webkit-mask-image: var(--c2e-header-icon) !important;
+  mask-image: var(--c2e-header-icon) !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  -webkit-mask-size: contain !important;
+  mask-size: contain !important;
+}
+#potree_sidebar_container #potree_menu > h3.c2e-section-open:not(#menu_about)::before {
+  background-color: #2f7d4f !important;
+}
+#potree_sidebar_container #menu_appearance { --c2e-header-icon: url("../assets/tabler/adjustments-horizontal.svg"); }
+#potree_sidebar_container #menu_tools { --c2e-header-icon: url("../assets/tabler/ruler-measure.svg"); }
+#potree_sidebar_container #menu_scene { --c2e-header-icon: url("../assets/tabler/layers-intersect.svg"); }
+#potree_sidebar_container #menu_filters { --c2e-header-icon: url("../assets/tabler/filter.svg"); }
+#potree_sidebar_container #potree_menu > h3:not(#menu_about)::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 18px !important;
+  top: 50% !important;
+  width: 8px !important;
+  height: 8px !important;
+  box-sizing: border-box !important;
+  border-top: 1.7px solid #76867c !important;
+  border-right: 1.7px solid #76867c !important;
+  transform: translateY(-50%) rotate(45deg) !important;
+  transform-origin: center !important;
+  transition: transform .18s ease, border-color .18s ease !important;
+}
+#potree_sidebar_container #potree_menu > h3.c2e-section-open:not(#menu_about)::after {
+  border-top-color: #2f7d4f !important;
+  border-right-color: #2f7d4f !important;
+  transform: translateY(-70%) rotate(135deg) !important;
+}
+#potree_sidebar_container #potree_menu > h3 .ui-accordion-header-icon,
+#potree_sidebar_container #potree_menu > h3 .ui-icon {
+  display: none !important;
+}
+/* Regla más específica: «Acerca de» debe permanecer oculto */
+#potree_sidebar_container #potree_menu > h3#menu_about,
+#potree_sidebar_container #potree_menu > h3#menu_about + div {
+  display: none !important;
+}
+#potree_sidebar_container #potree_menu > h3:not(#menu_about):focus-visible {
+  outline: 2px solid #2f7d4f !important;
+  outline-offset: -2px !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  #potree_sidebar_container #potree_menu > h3:not(#menu_about),
+  #potree_sidebar_container #potree_menu > h3:not(#menu_about)::after {
+    transition: none !important;
+  }
+}
