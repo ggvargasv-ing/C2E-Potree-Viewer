@@ -207,3 +207,7 @@ Para comprender o modificar este visor, consultar **en este orden**:
 6. `libs/jstree/themes/mixed/style.css` y `libs/jstree/jstree.js`, cuando la tarea afecte al árbol.
 
 Antes de proponer cambios, reproducir el problema, identificar el archivo y el selector/evento implicados, presentar una modificación mínima y comprobar que la carga de nubes, herramientas y controles siguen funcionando. **No asumir** que una corrección CSS genérica es aplicable a esta versión concreta de Potree.
+
+### Cabeceras de sección (rama de validación)
+
+Las cabeceras Apariencia, Herramientas, Escena y Filtros usan iconos SVG locales de [Tabler Icons](https://tabler.io/icons) (licencia MIT; conservar atribución y avisos de la biblioteca). El estilo está en el bloque final de `css/styles.css`; `js/c2e-ui.js` asigna la clase `c2e-section-open` y `aria-expanded` leyendo el `display` computado del panel hermano y observando sus cambios. El chevron cambia orientación y el texto/icono pasan a verde cuando la sección está abierta. `#menu_about` continúa oculto. **Pendiente de validación en XAMPP antes de fusionar en `main`.**
