@@ -10,7 +10,7 @@ Visor web independiente de nubes de puntos LiDAR para el proyecto **CARBON2EARTH
 
 ## 1. Alcance
 
-Este repositorio contiene el **visor Potree autónomo**, no el núcleo del prototipo FDM ni los servicios de procesamiento de observación de la Tierra. Permite representar una o varias nubes convertidas al formato que consume esta distribución de Potree, navegar por la escena y utilizar las herramientas proporcionadas por la biblioteca.
+Este repositorio contiene el **visor Potree autónomo**. Permite representar una o varias nubes convertidas al formato que consume esta distribución de Potree, navegar por la escena y utilizar las herramientas proporcionadas por la biblioteca.
 
 La interfaz C2E incorpora:
 
@@ -21,8 +21,6 @@ La interfaz C2E incorpora:
 - Árbol de Escena para activar o desactivar la visualización de nubes, con casillas de alto contraste adaptadas a jsTree (verde C2E para el estado marcado).
 - Indicador en la esquina superior derecha que refleja las **nubes realmente visibles**, no únicamente las solicitadas por URL.
 - Herramientas nativas de Potree de medición, navegación, propiedades y recorte, sujetas a validación funcional específica.
-
-**Fuera del alcance actual:** procesamiento de archivos LAS/LAZ en el navegador, publicación de datos LiDAR en GitHub, servicios satelitales, API REST propia y superposición georreferenciada de límites de áreas piloto. La inclusión futura de Shapefiles es una mejora pendiente, no una funcionalidad implementada.
 
 ## 2. Organización del código
 
@@ -64,7 +62,7 @@ La estructura exacta bajo cada carpeta depende de la salida del conversor. El re
 
 - Navegador moderno con soporte WebGL.
 - Servidor HTTP estático: la configuración utilizada y comprobada durante el desarrollo fue **Apache mediante XAMPP en Windows**.
-- Nubes de puntos **previamente convertidas** y accesibles por HTTP en `pointclouds/<nombre>/metadata.json`.
+- Nubes de puntos **previamente convertidas a octree** y accesibles por HTTP en `pointclouds/<nombre>/metadata.json`.
 
 Ejemplo de instalación local:
 
@@ -121,7 +119,7 @@ El CSS utiliza, entre otros, los colores `#2f7d4f` (verde principal), `#256540` 
 
 ### Precaución técnica: checkboxes de Escena
 
-**Los checkboxes del árbol de Escena no deben tratarse como simples `input[type="checkbox"]`.** La distribución incluida de jsTree utiliza reglas `.jstree-checkbox`, `.jstree-checked` y `.jstree-undetermined`, con iconografía procedente de sprites (`32px.png` y, en el tema adaptable, `40px.png`). El contraste de los estados marcados sobre el panel claro **se ha mejorado y validado manualmente en la interfaz**.
+**Los checkboxes del árbol de Escena no se deben tratar como `input[type="checkbox"]`.** La distribución incluida de jsTree utiliza reglas `.jstree-checkbox`, `.jstree-checked` y `.jstree-undetermined`, con iconografía procedente de sprites (`32px.png` y, en el tema adaptable, `40px.png`). El contraste de los estados marcados sobre el panel claro **se ha mejorado y validado manualmente en la interfaz**.
 
 **Diagnóstico confirmado en Chrome:** el árbol real tiene ID `#jstree_scene`; cada casilla es un elemento `<i class="jstree-icon jstree-checkbox" role="presentation"></i>` dentro de un `<a class="jstree-anchor">`. Al marcar, jsTree añade `jstree-checked` al **ancla**, no a un `input` ni al elemento padre `<li>`. El tema original dibuja la casilla con `libs/jstree/themes/mixed/32px.png`.
 
@@ -152,7 +150,6 @@ En `libs/potree/sidebar.html`, `#show_bounding_box` controla las cajas delimitad
 - Integración de la interfaz visual C2E.
 - Mejora permanente del contraste de casillas jsTree (estados marcado y desmarcado) y conservación de la visibilidad funcional de las nubes; confirmada mediante capturas y pruebas locales en Chrome.
 
-**Pendiente de una batería formal de pruebas:** todas las herramientas de medición y recorte, exportaciones, rendimiento con grandes volúmenes, compatibilidad entre navegadores, responsive, manejo de errores de carga y accesibilidad completa.
 
 **Limitaciones conocidas del código actual:**
 
@@ -166,7 +163,6 @@ En `libs/potree/sidebar.html`, `#show_bounding_box` controla las cajas delimitad
 ## 7. Hoja de ruta no implementada
 
 - **Contornos de pilotos:** visualizar las geometrías de las áreas piloto (por ejemplo, desde Shapefile) en un sistema de referencia coherente con las nubes; comprobar XY, Z y, si procede, ajuste al relieve. Existe `libs/shapefile/shapefile.js`, pero **no hay integración de límites implementada**.
-- **Accesibilidad del árbol:** mejora de contraste de casillas jsTree **implementada y comprobada para marcado/desmarcado**. Pendiente de validar de forma específica los estados indeterminado/deshabilitado, la navegación con teclado y otros criterios de accesibilidad.
 - **Robustez:** validar parámetros de URL, informar de errores HTTP y evitar reajustes de cámara imprevistos.
 - **Integración FDM:** definir una interfaz desacoplada para abrir el visor desde el frontend principal de CARBON2EARTH, sin fusionar los repositorios.
 
@@ -208,12 +204,4 @@ Para comprender o modificar este visor, consultar **en este orden**:
 
 Antes de proponer cambios, reproducir el problema, identificar el archivo y el selector/evento implicados, presentar una modificación mínima y comprobar que la carga de nubes, herramientas y controles siguen funcionando. **No asumir** que una corrección CSS genérica es aplicable a esta versión concreta de Potree.
 
-### Cabeceras de sección (rama de validación)
-
-Las cabeceras Apariencia, Herramientas, Escena y Filtros usan iconos SVG locales de [Tabler Icons](https://tabler.io/icons) (licencia MIT; conservar atribución y avisos de la biblioteca). El estilo está en el bloque final de `css/styles.css`; `js/c2e-ui.js` asigna la clase `c2e-section-open` y `aria-expanded` leyendo el `display` computado del panel hermano y observando sus cambios. El chevron cambia orientación y el texto/icono pasan a verde cuando la sección está abierta. `#menu_about` continúa oculto. **Validado en XAMPP:** cabeceras abiertas con texto e icono verdes, chevron hacia abajo, secciones cerradas neutras y sección «Acerca de» oculta. El arranque define los paneles cerrados antes de llamar a `c2eUpgradePotreeUI()`. La URL del script incluye `?v=c2e-headers-1-1` para evitar reutilizar una versión anterior en caché.
-
 **Control de caché (v1.1):** en `index.html`, `./js/c2e-ui.js?v=c2e-headers-1-1` diferencia la versión utilizada. Tras cambios de JS/CSS, actualizar el identificador de versión correspondiente para evitar contenido obsoleto en el navegador.
-
-### Deslizadores con relleno progresivo (v1.1.1)
-
-`js/c2e-ui.js` incorpora exclusivamente una mejora visual para los deslizadores jQuery UI del panel lateral: observa la posición horizontal del `.ui-slider-handle` y colorea de verde C2E (`#2f7d4f`) la porción recorrida de la barra, dejando el resto en gris (`#dce3dc`). Detecta los deslizadores disponibles y los añadidos dinámicamente; **no modifica los valores, rangos ni eventos de Potree**. `index.html` utiliza `c2e-ui.js?v=c2e-sliders-1-1-1` para evitar caché obsoleta. Efecto comprobado en Chrome/XAMPP tras recargar el visor; pendientes pruebas automatizadas y exhaustivas en otros navegadores.
